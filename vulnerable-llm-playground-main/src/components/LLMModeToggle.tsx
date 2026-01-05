@@ -55,7 +55,53 @@ export const LLMModeToggle: React.FC = () => {
             {geminiApiKey ? 'API Key Set' : 'No API Key'}
           </div>
         )}
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Button } from './ui/button';
+import { Dialog, DialogTrigger } from './ui/dialog';
+import { Settings } from 'lucide-react';
+
+const LLMModeToggle = () => {
+  const [llmMode, setLlmMode] = useState('mock');
+  const [isApiKeySet, setIsApiKeySet] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  useEffect(() => {
+    // Check if API key is set on component mount
+    checkApiKeyStatus();
+  }, []);
+
+  const checkApiKeyStatus = async () => {
+    try {
+      const response = await fetch('/api/check-api-key');
+      const data = await response.json();
+      setIsApiKeySet(data.isSet);
+    } catch (error) {
+      console.error('Error checking API key status:', error);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-2">
+      {/* ... other code ... */}
+      {llmMode === "real" && (
+        <div className={`text-xs px-2 py-1 rounded ${isApiKeySet ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+          {isApiKeySet ? 'API Key Set' : 'No API Key'}
+        </div>
+      )}
+    </div>
+
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm" className="gap-1">
+          <Settings className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      {/* ... rest of the component ... */}
+    </Dialog>
+  );
+};
+
+export default LLMModeToggle;
 import { Button } from './ui/button';
 import { Dialog, DialogTrigger } from './ui/dialog';
 import { Settings } from 'lucide-react';
