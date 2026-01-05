@@ -55,7 +55,48 @@ export const LLMModeToggle: React.FC = () => {
             {geminiApiKey ? 'API Key Set' : 'No API Key'}
           </div>
         )}
-      </div>
+import React from 'react';
+import { Button } from './ui/button';
+import { Dialog, DialogTrigger } from './ui/dialog';
+import { Settings } from 'lucide-react';
+
+interface LLMModeToggleProps {
+  llmMode: string;
+  onToggle: () => void;
+}
+
+const LLMModeToggle: React.FC<LLMModeToggleProps> = ({ llmMode, onToggle }) => {
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+
+  return (
+    <div className="flex items-center space-x-2">
+      <Button
+        variant={llmMode === 'mock' ? 'default' : 'outline'}
+        size="sm"
+        onClick={onToggle}
+      >
+        {llmMode === 'mock' ? 'Mock' : 'Real'}
+      </Button>
+
+      {llmMode === 'real' && (
+        <div className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-800">
+          API Status
+        </div>
+      )}
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline" size="sm" className="gap-1">
+            <Settings className="h-4 w-4" />
+          </Button>
+        </DialogTrigger>
+        {/* Dialog content */}
+      </Dialog>
+    </div>
+  );
+};
+
+export default LLMModeToggle;
       
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
